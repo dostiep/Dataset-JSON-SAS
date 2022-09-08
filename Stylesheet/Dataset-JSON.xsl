@@ -25,28 +25,28 @@
     <xsl:value-of select="$lf"/> 
     <xsl:for-each select="$root/odm:Study/odm:MetaDataVersion/odm:ItemGroupDef">
         <xsl:variable name="OID" select="@OID"/>
-        <xsl:variable name="SASDatasetName" select="@SASDatasetName"/>
+        <xsl:variable name="Name" select="@Name"/>
         <xsl:variable name="Data" select="if (@IsReferenceData = 'No') then 'clinicalData' else if (@IsReferenceData = 'Yes') then 'referenceData' else ' '"/>
         <xsl:variable name="Label" select="odm:Description/odm:TranslatedText"/>
-		<xsl:text>%let __dsid = %sysfunc(open(__tmp.</xsl:text> <xsl:value-of select="$SASDatasetName"/> <xsl:text>,i));</xsl:text> 
+		<xsl:text>%let __dsid = %sysfunc(open(__tmp.</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>,i));</xsl:text> 
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>%let __nobs  = %sysfunc(attrn(&amp;__dsid.,nlobsf));</xsl:text> 
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>%let __rc   = %sysfunc(close(&amp;__dsid.));</xsl:text> 
 		<xsl:value-of select="$lf"/> 
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>data __data_</xsl:text> <xsl:value-of select="$SASDatasetName"/> <xsl:text>;</xsl:text>
+		<xsl:text>data __data_</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>	retain ITEMGROUPDATASEQ;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>	set __tmp.</xsl:text> <xsl:value-of select="$SASDatasetName"/> <xsl:text>;</xsl:text>
+		<xsl:text>	set __tmp.</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>	ITEMGROUPDATASEQ+1;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>run;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>filename __out  &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>\</xsl:text><xsl:value-of select="$SASDatasetName"/><xsl:text>.json&quot;;</xsl:text>
+		<xsl:text>filename __out  &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>\</xsl:text><xsl:value-of select="$Name"/><xsl:text>.json&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>proc json out=__out pretty nosastags;</xsl:text>
@@ -71,7 +71,7 @@
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write values &quot;records&quot; &quot;&amp;__nobs.&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/>
-		<xsl:text>					write values &quot;name&quot; &quot;</xsl:text> <xsl:value-of select="$SASDatasetName"/> <xsl:text>&quot;;</xsl:text>
+		<xsl:text>					write values &quot;name&quot; &quot;</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write values &quot;label&quot; &quot;</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
@@ -137,7 +137,7 @@
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write open array;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>						export __data_</xsl:text> <xsl:value-of select="$SASDatasetName"/> <xsl:text> / nokeys;</xsl:text>
+		<xsl:text>						export __data_</xsl:text> <xsl:value-of select="$Name"/> <xsl:text> / nokeys;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write close;</xsl:text>
 		<xsl:value-of select="$lf"/> 
@@ -157,7 +157,7 @@
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>proc sql noprint;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>	drop table __data_</xsl:text><xsl:value-of select="$SASDatasetName"/><xsl:text>;</xsl:text>
+		<xsl:text>	drop table __data_</xsl:text><xsl:value-of select="$Name"/><xsl:text>;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>quit;</xsl:text>
 		<xsl:value-of select="$lf"/> 
