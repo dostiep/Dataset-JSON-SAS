@@ -69,7 +69,7 @@
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>				write open object;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>					write values &quot;records&quot; &quot;&amp;__nobs.&quot;;</xsl:text>
+		<xsl:text>					write values &quot;records&quot; &amp;__nobs.;</xsl:text>
 		<xsl:value-of select="$lf"/>
 		<xsl:text>					write values &quot;name&quot; &quot;</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
@@ -87,7 +87,7 @@
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>							write values &quot;label&quot; &quot;Record identifier&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>							write values &quot;type&quot; &quot;Record integer&quot;;</xsl:text>
+		<xsl:text>							write values &quot;type&quot; &quot;integer&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>						write close;</xsl:text>
 		<xsl:value-of select="$lf"/> 
@@ -125,7 +125,7 @@
 			 <xsl:text>&quot;;</xsl:text>
 			<xsl:value-of select="$lf"/> 
 			<xsl:if test="$Length">
-				<xsl:text>							write values &quot;length&quot; &quot;</xsl:text> <xsl:value-of select="$Length"/> <xsl:text>&quot;;</xsl:text>
+				<xsl:text>							write values &quot;length&quot; </xsl:text> <xsl:value-of select="$Length"/> <xsl:text>;</xsl:text>
 				<xsl:value-of select="$lf"/> 
 			</xsl:if>
 			<xsl:text>						write close;</xsl:text>
@@ -133,7 +133,7 @@
         </xsl:for-each>
 		<xsl:text>					write close;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>					write values &quot;itemdata&quot;;</xsl:text>
+		<xsl:text>					write values &quot;itemData&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write open array;</xsl:text>
 		<xsl:value-of select="$lf"/> 
