@@ -1,0 +1,107 @@
+{
+  "clinicalData": {
+    "studyOID": "cdisc.com/CDISCPILOT01",
+    "metaDataVersionOID": "MDV.MSGv2.0.SDTMIG.3.3.SDTM.1.7",
+    "itemGroupData": {
+      "IG.NV": {
+        "records": 0,
+        "name": "NV",
+        "label": "Nervous System Findings",
+        "items": [
+          {
+            "OID": "ITEMGROUPDATASEQ",
+            "name": "ITEMGROUPDATASEQ",
+            "label": "Record identifier",
+            "type": "integer"
+          },
+          {
+            "OID": "IT.NV.STUDYID",
+            "name": "STUDYID",
+            "label": "Study Identifier",
+            "type": "string",
+            "length": 12
+          },
+          {
+            "OID": "IT.NV.DOMAIN",
+            "name": "DOMAIN",
+            "label": "Domain Abbreviation",
+            "type": "string",
+            "length": 2
+          },
+          {
+            "OID": "IT.NV.USUBJID",
+            "name": "USUBJID",
+            "label": "Unique Subject Identifier",
+            "type": "string",
+            "length": 8
+          },
+          {
+            "OID": "IT.NV.NVSEQ",
+            "name": "NVSEQ",
+            "label": "Sequence Number",
+            "type": "integer",
+            "length": 3
+          },
+          {
+            "OID": "IT.NV.NVTESTCD",
+            "name": "NVTESTCD",
+            "label": "Short Name of Nervous System Test",
+            "type": "string",
+            "length": 4
+          },
+          {
+            "OID": "IT.NV.NVTEST",
+            "name": "NVTEST",
+            "label": "Name of Nervous System Test",
+            "type": "string",
+            "length": 14
+          },
+          {
+            "OID": "IT.NV.NVORRES",
+            "name": "NVORRES",
+            "label": "Result or Finding in Original Units",
+            "type": "string",
+            "length": 8
+          },
+          {
+            "OID": "IT.NV.NVSTRESC",
+            "name": "NVSTRESC",
+            "label": "Character Result/Finding in Std Format",
+            "type": "string",
+            "length": 8
+          },
+          {
+            "OID": "IT.NV.VISITNUM",
+            "name": "VISITNUM",
+            "label": "Visit Number",
+            "type": "float",
+            "length": 8
+          },
+          {
+            "OID": "IT.NV.EPOCH",
+            "name": "EPOCH",
+            "label": "Epoch",
+            "type": "string",
+            "length": 9
+          },
+          {
+            "OID": "IT.NV.NVDTC",
+            "name": "NVDTC",
+            "label": "Date/Time of Collection",
+            "type": "string"
+          },
+          {
+            "OID": "IT.NV.NVDY",
+            "name": "NVDY",
+            "label": "Study Day of Visit/Collection/Exam",
+            "type": "integer",
+            "length": 8
+          }
+        ],
+        "itemData": [
+
+        ]
+      }
+    }
+  }
+}
