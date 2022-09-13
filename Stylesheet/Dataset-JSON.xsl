@@ -98,7 +98,7 @@
 		<xsl:value-of select="$lf"/>
 		<xsl:text>					write values &quot;name&quot; &quot;</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>					write values &quot;label&quot; &quot;</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>&quot;;</xsl:text>
+		<xsl:text>					write values &quot;label&quot; %sysfunc(quote(</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>));</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write values &quot;items&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
