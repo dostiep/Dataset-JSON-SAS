@@ -16,6 +16,7 @@
 
 <!-- Parameters -->
 <xsl:param name="libname"/>
+<xsl:param name="pretty"/>
 	
 <xsl:template match="/"> 
 	<xsl:variable name="studyOID" select="normalize-space($root/odm:Study/@OID)"/> 
@@ -62,8 +63,6 @@
  	<xsl:text>%mend __checkds;</xsl:text> 
     <xsl:value-of select="$lf"/> 
     <xsl:value-of select="$lf"/> 
-    
-    
     <xsl:for-each select="$root/odm:Study/odm:MetaDataVersion/odm:ItemGroupDef">
         <xsl:variable name="OID" select="@OID"/>
         <xsl:variable name="Name" select="@Name"/>
@@ -75,7 +74,7 @@
 		<xsl:text>filename __out  &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>\</xsl:text><xsl:value-of select="$Name"/><xsl:text>.json&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>proc json out=__out pretty nosastags;</xsl:text>
+		<xsl:text>proc json out=__out </xsl:text> <xsl:value-of select="if ($pretty = 'N') then 'nopretty' else if ($pretty = 'Y') then 'pretty' else 'nopretty'"/> <xsl:text> nosastags scan trimblanks nofmtcharacter nofmtdatetime nofmtnumeric;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>	write open object;</xsl:text>
 		<xsl:value-of select="$lf"/> 
