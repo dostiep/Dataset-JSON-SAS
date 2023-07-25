@@ -14,9 +14,16 @@
 
 <!-- Parameters -->
 <xsl:param name="libname"/>
-<xsl:param name="pretty"/>
+<xsl:param name="xpt" select="'N'"/>
+<xsl:param name="pretty" select="'N'"/>
 	
 <xsl:template match="/"> 
+	<xsl:choose>
+		<xsl:when test="$xpt = ('N', 'Y') and $pretty = ('N', 'Y')"/>
+		<xsl:otherwise>
+			<xsl:message terminate="yes"/>
+		</xsl:otherwise>
+	</xsl:choose>	
 	<xsl:variable name="fileOID" select="normalize-space($root/@FileOID)"/> 
 	<xsl:variable name="studyOID" select="normalize-space($root/odm:Study/@OID)"/> 
 	<xsl:variable name="metaDataVersionOID" select="normalize-space($root/odm:Study/odm:MetaDataVersion/@OID)"/> 
@@ -24,57 +31,70 @@
 	<xsl:text>%let __creationDateTime = %sysfunc(datetime(),is8601dt.);</xsl:text> 
 	<xsl:value-of select="$lf"/> 
 	<xsl:value-of select="$lf"/> 
-    <xsl:text>libname __tmp &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>&quot;;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-    <xsl:value-of select="$lf"/> 
 	<xsl:text>%macro __checkds(__dsn);</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>	%global __nobs;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>	%if %sysfunc(exist(__tmp.&amp;__dsn.)) %then %do;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		%let __dsid = %sysfunc(open(__tmp.&amp;__dsn.,i));</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		%let __nobs  = %sysfunc(attrn(&amp;__dsid.,nlobsf));</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		%let __rc   = %sysfunc(close(&amp;__dsid.));</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		data __data_&amp;__dsn.;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>			retain ITEMGROUPDATASEQ;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>			set __tmp.&amp;__dsn.;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>			ITEMGROUPDATASEQ+1;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		run;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>	%end;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>	%else %do;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		%let __nobs  = 0;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		data __data_&amp;__dsn.;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-	<xsl:text>		run;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
- 	<xsl:text>	%end;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
+  <xsl:value-of select="$lf"/> 
+	<xsl:text>%global __nobs;</xsl:text> 
+  <xsl:value-of select="$lf"/> 
+  <xsl:value-of select="$lf"/> 
+	<xsl:choose>
+		<xsl:when test="upper-case($xpt) = 'Y'">
+		  <xsl:text>%if %sysfunc(fileexist(&quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>/&amp;__dsn..xpt&quot;)) %then %do;;</xsl:text> 
+		  <xsl:value-of select="$lf"/> 
+		  <xsl:text>libname __tmp xport &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>/&amp;__dsn..xpt&quot;;</xsl:text> 
+		</xsl:when>
+		<xsl:when test="upper-case($xpt) = 'N'">
+		  <xsl:text>libname __tmp &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>&quot;;</xsl:text> 
+		  <xsl:value-of select="$lf"/> 
+			<xsl:text>%if %sysfunc(exist(__tmp.&amp;__dsn.)) %then %do;</xsl:text> 
+		</xsl:when>
+		<xsl:otherwise/>		
+	</xsl:choose>	
+  <xsl:value-of select="$lf"/> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>data __data_&amp;__dsn.;</xsl:text> 
+  <xsl:value-of select="$lf"/> 
+	<xsl:text> retain ITEMGROUPDATASEQ;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text> set __tmp.&amp;__dsn.;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text> ITEMGROUPDATASEQ+1;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>run;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>%let __dsid = %sysfunc(open(__data_&amp;__dsn.,i));</xsl:text> 
+  <xsl:value-of select="$lf"/> 
+	<xsl:text>%let __nobs  = %sysfunc(attrn(&amp;__dsid.,nlobsf));</xsl:text> 
+  <xsl:value-of select="$lf"/> 
+	<xsl:text>%let __rc   = %sysfunc(close(&amp;__dsid.));</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>libname __tmp clear;</xsl:text>   
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>%end;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>%else %do;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>%let __nobs  = 0;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>data __data_&amp;__dsn.;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>run;</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:text>%end;</xsl:text> 		  
+	<xsl:value-of select="$lf"/> 
  	<xsl:text>%mend __checkds;</xsl:text> 
-    <xsl:value-of select="$lf"/> 
-    <xsl:value-of select="$lf"/> 
-    <xsl:for-each select="$root/odm:Study/odm:MetaDataVersion/odm:ItemGroupDef">
-        <xsl:variable name="OID" select="@OID"/>
-        <xsl:variable name="Name" select="@Name"/>
-        <xsl:variable name="Data" select="if (@IsReferenceData = 'No') then 'clinicalData' else if (@IsReferenceData = 'Yes') then 'referenceData' else ' '"/>
-        <xsl:variable name="Label" select="odm:Description/odm:TranslatedText"/>
+  <xsl:value-of select="$lf"/> 
+  <xsl:value-of select="$lf"/> 
+  <xsl:for-each select="$root/odm:Study/odm:MetaDataVersion/odm:ItemGroupDef">
+    <xsl:variable name="OID" select="@OID"/>
+    <xsl:variable name="Name" select="@Name"/>
+    <xsl:variable name="Data" select="if (@IsReferenceData = 'No') then 'clinicalData' else if (@IsReferenceData = 'Yes') then 'referenceData' else ' '"/>
+    <xsl:variable name="Label" select="odm:Description/odm:TranslatedText"/>
 		<xsl:text>%__checkds(</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>);</xsl:text> 
 		<xsl:value-of select="$lf"/> 
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>filename __out  &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>\</xsl:text><xsl:value-of select="$Name"/><xsl:text>.json&quot;;</xsl:text>
+		<xsl:text>filename __out  &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>/</xsl:text><xsl:value-of select="$Name"/><xsl:text>.json&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>proc json out=__out </xsl:text> <xsl:value-of select="if ($pretty = 'N') then 'nopretty' else if ($pretty = 'Y') then 'pretty' else 'nopretty'"/> <xsl:text> nosastags scan trimblanks nofmtcharacter nofmtdatetime nofmtnumeric;</xsl:text>
@@ -183,7 +203,7 @@
 			</xsl:if>
 			<xsl:text>						write close;</xsl:text>
 			<xsl:value-of select="$lf"/> 
-        </xsl:for-each>
+	      </xsl:for-each>
 		<xsl:text>					write close;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write values &quot;itemData&quot;;</xsl:text>
@@ -215,11 +235,9 @@
 		<xsl:text>quit;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:value-of select="$lf"/> 
-    </xsl:for-each>
+  </xsl:for-each>
 	<xsl:value-of select="$lf"/> 
 	<xsl:text>%sysmacdelete __checkds;</xsl:text>   
-	<xsl:value-of select="$lf"/> 
-	<xsl:text>libname __tmp clear;</xsl:text>   
 </xsl:template> 
 	
 </xsl:stylesheet>

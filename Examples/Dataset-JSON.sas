@@ -4,7 +4,8 @@ filename outfile temp;
 
 proc xsl in=xmlfile xsl=xslfile out=outfile;
 	parameter "libname" = "<Your-path>"
-	          "pretty" = "N";
+	          "pretty" = "N"
+			  "xpt" = "N";
 run;
 
 %inc outfile;
