@@ -22,7 +22,7 @@ filename outfile temp;
 
 proc xsl in=xmlfile xsl=xslfile out=outfile;
 
-	parameter "libname" = "C:\Temp" "pretty" = "N" "xpt" = "N";
+parameter "libname" = "C:\Temp" "pretty" = "N" "xpt" = "N";
 
 run;
 
