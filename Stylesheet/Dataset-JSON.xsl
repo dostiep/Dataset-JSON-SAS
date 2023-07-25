@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" 
 	xmlns:odm="http://www.cdisc.org/ns/odm/v1.3" 
-	xmlns:def="http://www.cdisc.org/ns/def/v2.0" 
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-	xmlns:fn="http://www.w3.org/2005/xpath-functions">
+	xmlns:def="http://www.cdisc.org/ns/def/v2.x" 
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	
 <xsl:output method="text" version="1.0" encoding="UTF-8" indent="yes"/>
 
@@ -19,8 +17,13 @@
 <xsl:param name="pretty"/>
 	
 <xsl:template match="/"> 
+	<xsl:variable name="fileOID" select="normalize-space($root/@FileOID)"/> 
 	<xsl:variable name="studyOID" select="normalize-space($root/odm:Study/@OID)"/> 
 	<xsl:variable name="metaDataVersionOID" select="normalize-space($root/odm:Study/odm:MetaDataVersion/@OID)"/> 
+	<xsl:variable name="originator" select="normalize-space($root/@Originator)"/> 
+	<xsl:text>%let __creationDateTime = %sysfunc(datetime(),is8601dt.);</xsl:text> 
+	<xsl:value-of select="$lf"/> 
+	<xsl:value-of select="$lf"/> 
     <xsl:text>libname __tmp &quot;</xsl:text> <xsl:value-of select="$libname"/> <xsl:text>&quot;;</xsl:text> 
     <xsl:value-of select="$lf"/> 
     <xsl:value-of select="$lf"/> 
@@ -78,6 +81,18 @@
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>	write open object;</xsl:text>
 		<xsl:value-of select="$lf"/> 
+		<xsl:text>		write values &quot;creationDateTime&quot; &quot;&amp;__creationDateTime. &quot;;</xsl:text> 
+		<xsl:value-of select="$lf"/> 
+		<xsl:text>		write values &quot;datasetJSONVersion&quot; &quot;1.0.0&quot;;</xsl:text> 
+		<xsl:value-of select="$lf"/> 
+		<xsl:if test="$fileOID">
+			<xsl:text>		write values &quot;fileOID&quot; &quot;</xsl:text> <xsl:value-of select="$fileOID"/> <xsl:text>.</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>&quot;;</xsl:text>
+			<xsl:value-of select="$lf"/> 
+		</xsl:if>
+		<xsl:if test="$originator">
+			<xsl:text>		write values &quot;originator&quot; &quot;</xsl:text> <xsl:value-of select="$originator"/> <xsl:text>&quot;;</xsl:text> 
+			<xsl:value-of select="$lf"/>
+		</xsl:if>
 		<xsl:text>		write values &quot;</xsl:text> <xsl:value-of select="$Data"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>		write open object;</xsl:text>
@@ -98,7 +113,8 @@
 		<xsl:value-of select="$lf"/>
 		<xsl:text>					write values &quot;name&quot; &quot;</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<xsl:text>					write values &quot;label&quot; %sysfunc(quote(</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>));</xsl:text>
+		<!--xsl:text>					write values &quot;label&quot; %sysfunc(quote(</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>));</xsl:text-->
+		<xsl:text>					write values &quot;label&quot; &quot;</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write values &quot;items&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
@@ -116,13 +132,15 @@
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>						write close;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-        <xsl:for-each select="odm:ItemRef">
+		<xsl:for-each select="odm:ItemRef">
 			<xsl:variable name="ItemOID" select="@ItemOID"/>
 			<xsl:variable name="OID" select="normalize-space($root/odm:Study/odm:MetaDataVersion/odm:ItemDef[@OID=$ItemOID]/@OID)"/>
 			<xsl:variable name="Name" select="normalize-space($root/odm:Study/odm:MetaDataVersion/odm:ItemDef[@OID=$ItemOID]/@Name)"/>
-			<xsl:variable name="DataType" select="normalize-space($root/odm:Study/odm:MetaDataVersion/odm:ItemDef[@OID=$ItemOID]/@DataType)"/>
 			<xsl:variable name="Label" select="normalize-space($root/odm:Study/odm:MetaDataVersion/odm:ItemDef[@OID=$ItemOID]/odm:Description/odm:TranslatedText)"/>
+			<xsl:variable name="DataType" select="normalize-space($root/odm:Study/odm:MetaDataVersion/odm:ItemDef[@OID=$ItemOID]/@DataType)"/>
 			<xsl:variable name="Length" select="normalize-space($root/odm:Study/odm:MetaDataVersion/odm:ItemDef[@OID=$ItemOID]/@Length)"/>
+			<xsl:variable name="DisplayFormat" select="normalize-space($root/odm:Study/odm:MetaDataVersion/odm:ItemDef[@OID=$ItemOID]/@def:DisplayFormat)"/>
+			<xsl:variable name="KeySequence" select="@KeySequence"/>
 			<xsl:text>						write open object;</xsl:text>
 			<xsl:value-of select="$lf"/> 
 			<xsl:text>							write values &quot;OID&quot; &quot;</xsl:text> <xsl:value-of select="$OID"/> <xsl:text>&quot;;</xsl:text>
@@ -151,6 +169,16 @@
 			<xsl:value-of select="$lf"/> 
 			<xsl:if test="$Length">
 				<xsl:text>							write values &quot;length&quot; </xsl:text> <xsl:value-of select="$Length"/> <xsl:text>;</xsl:text>
+				<xsl:value-of select="$lf"/> 
+			</xsl:if>
+			<xsl:value-of select="$lf"/> 
+			<xsl:if test="$DisplayFormat">
+				<xsl:text>							write values &quot;displayFormat&quot; &quot;</xsl:text> <xsl:value-of select="$DisplayFormat"/> <xsl:text>&quot;;</xsl:text>
+				<xsl:value-of select="$lf"/> 
+			</xsl:if>
+			<xsl:value-of select="$lf"/> 
+			<xsl:if test="$KeySequence">
+				<xsl:text>							write values &quot;keySequence&quot; </xsl:text> <xsl:value-of select="$KeySequence"/> <xsl:text>;</xsl:text>
 				<xsl:value-of select="$lf"/> 
 			</xsl:if>
 			<xsl:text>						write close;</xsl:text>
