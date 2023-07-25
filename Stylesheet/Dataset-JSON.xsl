@@ -19,7 +19,7 @@
 	
 <xsl:template match="/"> 
 	<xsl:choose>
-		<xsl:when test="$xpt = ('N', 'Y') and $pretty = ('N', 'Y')"/>
+		<xsl:when test="$libname and $xpt = ('N', 'Y') and $pretty = ('N', 'Y')"/>
 		<xsl:otherwise>
 			<xsl:message terminate="yes"/>
 		</xsl:otherwise>
