@@ -15,19 +15,27 @@ The stylesheet is compatible for both Define 2.0 and 2.1 versions.
 ## Example of SAS program call:
 
 filename xmlfile "C:\Temp\define.xml";
+
 filename xslfile "C:\Folder\Stylesheet\Dataset-JSON.xsl";
+
 filename outfile temp;
 
 proc xsl in=xmlfile xsl=xslfile out=outfile;
+
 	parameter "libname" = "C:\Temp"
+
 	          "pretty" = "N"
+
 			  "xpt" = "N";
+
 run;
 
 %inc outfile;
 
 filename xmlfile clear;
+
 filename xslfile clear;
+
 filename outfile clear;
 
 ## Feedback
