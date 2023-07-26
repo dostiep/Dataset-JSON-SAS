@@ -2,7 +2,9 @@
 <xsl:stylesheet version="2.0" 
 	xmlns:odm="http://www.cdisc.org/ns/odm/v1.3" 
 	xmlns:def="http://www.cdisc.org/ns/def/v2.x" 
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:sas="http://www.sas.com"> 
 	
 <xsl:output method="text" version="1.0" encoding="UTF-8" indent="yes"/>
 
@@ -133,8 +135,7 @@
 		<xsl:value-of select="$lf"/>
 		<xsl:text>					write values &quot;name&quot; &quot;</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
-		<!--xsl:text>					write values &quot;label&quot; %sysfunc(quote(</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>));</xsl:text-->
-		<xsl:text>					write values &quot;label&quot; &quot;</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>&quot;;</xsl:text>
+		<xsl:text>					write values &quot;label&quot; &quot;</xsl:text> <xsl:value-of select="sas:encode-string($Label)"/> <xsl:text>&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
 		<xsl:text>					write values &quot;items&quot;;</xsl:text>
 		<xsl:value-of select="$lf"/> 
@@ -167,7 +168,7 @@
 			<xsl:value-of select="$lf"/> 
 			<xsl:text>							write values &quot;name&quot; &quot;</xsl:text> <xsl:value-of select="$Name"/> <xsl:text>&quot;;</xsl:text>
 			<xsl:value-of select="$lf"/> 
-			<xsl:text>							write values &quot;label&quot; &quot;</xsl:text> <xsl:value-of select="$Label"/> <xsl:text>&quot;;</xsl:text>
+			<xsl:text>							write values &quot;label&quot; &quot;</xsl:text> <xsl:value-of select="sas:encode-string($Label)"/> <xsl:text>&quot;;</xsl:text>
 			<xsl:value-of select="$lf"/> 
 			<xsl:text>							write values &quot;type&quot; &quot;</xsl:text> 
 				<xsl:choose>
@@ -240,4 +241,9 @@
 	<xsl:text>%sysmacdelete __checkds;</xsl:text>   
 </xsl:template> 
 	
+<xsl:function name="sas:encode-string" as="xs:string">
+    <xsl:param name="string" as="xs:string"/>
+    <xsl:sequence select="replace($string, '&quot;', '%str(%&quot;)')"/>
+</xsl:function>
+  	
 </xsl:stylesheet>
